@@ -7,7 +7,6 @@ on:
 permissions:
   contents: read
   id-token: write
-  attestations: write
 
 jobs:
   publish:
@@ -25,17 +24,7 @@ jobs:
       - run: npm test
       - run: npm run type-check
 
-      - name: Generate SBOM
-        uses: CycloneDX/gh-node-module-generatebom@v1
-        with:
-          output: sbom.json
-
       - name: Publish to npm
         run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Attest SBOM
-        uses: actions/attest-sbom@v2
-        with:
-          subject-path: sbom.json
