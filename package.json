@@ -1,0 +1,49 @@
+{
+  "name": "mint-id",
+  "version": "0.1.0",
+  "description": "Cryptographically secure identifiers using single-token dictionary words",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "data"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "id",
+    "identifier",
+    "token",
+    "llm",
+    "csprng",
+    "wordlist",
+    "diceware"
+  ],
+  "author": "Abir Taheer",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abir-taheer/mint-id.git"
+  },
+  "engines": {
+    "node": ">=14.10.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.3",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  }
+}

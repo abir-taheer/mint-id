@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "format": "tsv",
+  "bitmask": {
+    "bit0": "claude",
+    "bit1": "cl100k_base",
+    "bit2": "o200k_base",
+    "bit3": "gpt2"
+  },
+  "tokenizers": [
+    "claude",
+    "cl100k_base",
+    "o200k_base",
+    "gpt2"
+  ],
+  "models": {
+    "claude-opus-4": "claude",
+    "claude-opus-4-6": "claude",
+    "claude-sonnet-4": "claude",
+    "claude-sonnet-4-5": "claude",
+    "claude-haiku-4-5": "claude",
+    "claude-3-5-sonnet": "claude",
+    "claude-3-5-haiku": "claude",
+    "claude-3-opus": "claude",
+    "gpt-4": "cl100k_base",
+    "gpt-4-turbo": "cl100k_base",
+    "gpt-3.5-turbo": "cl100k_base",
+    "gpt-4o": "o200k_base",
+    "gpt-4o-mini": "o200k_base",
+    "o1": "o200k_base",
+    "o1-mini": "o200k_base",
+    "o1-pro": "o200k_base",
+    "o3": "o200k_base",
+    "o3-mini": "o200k_base",
+    "o4-mini": "o200k_base",
+    "gpt-5": "o200k_base",
+    "codex": "o200k_base",
+    "gpt-2": "gpt2",
+    "gpt-3": "gpt2",
+    "code-davinci-002": "gpt2"
+  },
+  "aliases": {
+    "o200k_harmony": "o200k_base",
+    "p50k_base": "gpt2",
+    "p50k_edit": "gpt2",
+    "r50k_base": "gpt2"
+  },
+  "counts": {
+    "claude": 7629,
+    "cl100k_base": 4914,
+    "o200k_base": 5640,
+    "gpt2": 3495,
+    "universal": 2220
+  },
+  "source": "/usr/share/dict/words (macOS, 235976 entries)",
+  "filter": "length >= 3, case-insensitive dedup"
+}
