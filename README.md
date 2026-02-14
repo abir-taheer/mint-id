@@ -1,6 +1,6 @@
 # mint-id
 
-Cryptographically secure identifiers using single-token dictionary words. Zero runtime dependencies.
+Cryptographically secure identifiers using single-token dictionary words. Zero runtime dependencies. Works in Node, Cloudflare Workers, Deno, and browsers.
 
 ```typescript
 import { mintId } from 'mint-id';
@@ -35,6 +35,28 @@ mintId({ minEntropy: 256 });
 mintId({ words: 8, delimiter: '-' });
 ```
 
+## Extended Mode
+
+Need a larger word pool? Import from `mint-id/extended` to unlock `maxTokens`:
+
+```typescript
+import { mintId, wordlist } from 'mint-id/extended';
+
+// Allow words up to 2 tokens each — much larger pool
+mintId({ maxTokens: 2 });
+
+wordlist({ maxTokens: 1 }).length;  // 2,220 (same as base)
+wordlist({ maxTokens: 2 }).length;  // ~100k words
+wordlist({ maxTokens: 3 }).length;  // ~195k words
+```
+
+The extended entry point includes all 234k dictionary words with per-tokenizer token counts. **Tree-shakeable** — your bundler only includes the extended data if you import from `mint-id/extended`.
+
+| Entry point | Bundle size | Word pool | `maxTokens` |
+|-------------|-------------|-----------|-------------|
+| `mint-id` | ~173 KB | 10k single-token words | N/A (always 1) |
+| `mint-id/extended` | ~6.6 MB | 234k words | 1–∞ |
+
 ## API
 
 ### `mintId(options?): string`
@@ -48,10 +70,11 @@ Generate a cryptographically secure identifier.
 | `delimiter` | `string` | `'_'` | Separator between words. |
 | `model` | `string \| string[]` | — | Model(s) to optimize for. |
 | `tokenizer` | `string \| string[]` | — | Tokenizer(s) to target. Takes precedence over `model`. |
+| `maxTokens` | `number` | `1` | Max tokens per word. **Extended only.** |
 
-When no `model` or `tokenizer` is specified, uses the **universal** wordlist (words that are single-token in all supported tokenizers).
+When no `model` or `tokenizer` is specified, uses the **universal** wordlist (words that meet the token threshold in all supported tokenizers).
 
-When multiple models or tokenizers are specified, uses words that are single-token in **all** of them (intersection).
+When multiple models or tokenizers are specified, uses words that meet the threshold in **all** of them (intersection).
 
 ### `entropy(options?): EntropyInfo`
 
@@ -70,9 +93,9 @@ entropy({ model: 'claude-opus-4-6' });
 Get the raw wordlist for a model/tokenizer configuration.
 
 ```typescript
-wordlist().length;                          // 2220 (universal)
+wordlist().length;                             // 2220 (universal)
 wordlist({ model: 'claude-opus-4-6' }).length; // 7629
-wordlist({ tokenizer: 'gpt2' }).length;     // 3495
+wordlist({ tokenizer: 'gpt2' }).length;        // 3495
 ```
 
 ## Error Classes
@@ -147,15 +170,24 @@ Where `base_tokens` accounts for the delimiter overhead. For underscore-delimite
 
 ## Security
 
-- **CSPRNG**: Uses Node.js `crypto.randomInt()` exclusively. No `Math.random()`.
+- **CSPRNG**: Uses `crypto.randomInt()` exclusively. No `Math.random()`.
 - **Diceware principle**: Security depends on pool size and word count, not on keeping the wordlist secret.
 - **What an attacker knows**: The wordlist (it's public), the number of words, the delimiter.
 - **What an attacker doesn't know**: Which words were selected (chosen by OS CSPRNG).
 - **Brute force**: 2,220^12 ≈ 2^133 combinations at default settings.
 
+## Runtime Compatibility
+
+No `fs` or Node.js-specific APIs beyond `crypto.randomInt()`. Works in:
+
+- **Node.js** >= 14.10
+- **Cloudflare Workers** (with `nodejs_compat`)
+- **Deno**
+- **Bun**
+
 ## Data Source
 
-Wordlists are generated from `/usr/share/dict/words` (macOS, 235,976 entries), filtered to words that are length >= 3 and tokenize to exactly 1 token. Token counts are verified against:
+Wordlists are generated from `/usr/share/dict/words` (macOS, 235,976 entries), filtered by token count. Token counts are verified against:
 
 - **Claude**: Anthropic token counting API
 - **cl100k_base**: tiktoken (GPT-4, GPT-3.5)
