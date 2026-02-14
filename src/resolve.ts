@@ -1,45 +1,15 @@
-import { readFileSync } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import type { MintIdOptions } from './types.js';
 import { UnknownTokenizerError, UnknownModelError } from './errors.js';
-
-interface Metadata {
-  bitmask: Record<string, string>;
-  models: Record<string, string>;
-  aliases: Record<string, string>;
-  tokenizers: string[];
-}
-
-const TOKENIZER_BITS: Record<string, number> = {
-  claude: 1,
-  cl100k_base: 2,
-  o200k_base: 4,
-  gpt2: 8,
-};
-
-let metadata: Metadata | null = null;
-
-function loadMetadata(): Metadata {
-  if (metadata) return metadata;
-  const dir = typeof __dirname !== 'undefined'
-    ? __dirname
-    : dirname(fileURLToPath(import.meta.url));
-  const raw = readFileSync(join(dir, '..', 'data', 'metadata.json'), 'utf-8');
-  metadata = JSON.parse(raw) as Metadata;
-  return metadata;
-}
+import { TOKENIZER_BITS, TOKENIZER_INDEX, MODELS, ALIASES, TOKENIZERS } from './data/metadata.js';
 
 function resolveTokenizerName(name: string): string {
-  const meta = loadMetadata();
   if (name in TOKENIZER_BITS) return name;
-  if (name in meta.aliases) return meta.aliases[name];
-  throw new UnknownTokenizerError(name, meta.tokenizers);
+  if (name in ALIASES) return ALIASES[name];
+  throw new UnknownTokenizerError(name, [...TOKENIZERS]);
 }
 
 function resolveModelName(name: string): string {
-  const meta = loadMetadata();
-  if (name in meta.models) return meta.models[name];
+  if (name in MODELS) return MODELS[name];
   throw new UnknownModelError(name);
 }
 
@@ -52,11 +22,7 @@ export function buildMask(options?: MintIdOptions): number {
     let mask = 0;
     for (const name of names) {
       const canonical = resolveTokenizerName(name);
-      const bit = TOKENIZER_BITS[canonical];
-      if (bit === undefined) {
-        throw new Error(`No bitmask defined for tokenizer: "${canonical}"`);
-      }
-      mask |= bit;
+      mask |= TOKENIZER_BITS[canonical];
     }
     return mask;
   }
@@ -66,14 +32,27 @@ export function buildMask(options?: MintIdOptions): number {
     let mask = 0;
     for (const name of names) {
       const tokenizer = resolveModelName(name);
-      const bit = TOKENIZER_BITS[tokenizer];
-      if (bit === undefined) {
-        throw new Error(`No bitmask defined for tokenizer: "${tokenizer}"`);
-      }
-      mask |= bit;
+      mask |= TOKENIZER_BITS[tokenizer];
     }
     return mask;
   }
 
   return 15; // default: universal
+}
+
+/** Resolve options to an array of tokenizer column indices (1-based, for extended word tuples) */
+export function resolveTokenizerIndices(options?: MintIdOptions): number[] {
+  if (!options) return [1, 2, 3, 4]; // all tokenizers
+
+  if (options.tokenizer) {
+    const names = Array.isArray(options.tokenizer) ? options.tokenizer : [options.tokenizer];
+    return names.map(n => TOKENIZER_INDEX[resolveTokenizerName(n)]);
+  }
+
+  if (options.model) {
+    const names = Array.isArray(options.model) ? options.model : [options.model];
+    return names.map(n => TOKENIZER_INDEX[resolveModelName(n)]);
+  }
+
+  return [1, 2, 3, 4]; // all tokenizers
 }
