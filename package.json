@@ -1,6 +1,6 @@
 {
   "name": "mint-id",
-  "version": "0.0.1-alpha",
+  "version": "1.0.0",
   "description": "Cryptographically secure identifiers using single-token dictionary words",
   "type": "module",
   "main": "./dist/index.cjs",
