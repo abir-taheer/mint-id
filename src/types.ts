@@ -15,7 +15,7 @@ export type Model =
   | (string & {});
 
 export interface MintIdOptions {
-  /** Number of words (default: 6). Ignored if minEntropy is set. */
+  /** Number of words (default: 12). Ignored if minEntropy is set. */
   words?: number;
   /** Minimum bits of entropy. Overrides `words` — auto-calculates word count. */
   minEntropy?: number;
@@ -25,6 +25,8 @@ export interface MintIdOptions {
   model?: Model | Model[];
   /** Tokenizer(s) to optimize for. Takes precedence over model. */
   tokenizer?: (Tokenizer | TokenizerAlias | (string & {})) | (Tokenizer | TokenizerAlias | (string & {}))[];
+  /** Maximum tokens per word (default: 1). Only available via 'mint-id/extended'. */
+  maxTokens?: number;
 }
 
 export interface EntropyInfo {

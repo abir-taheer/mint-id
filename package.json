@@ -11,11 +11,15 @@
       "types": "./dist/index.d.ts",
       "require": "./dist/index.cjs",
       "import": "./dist/index.js"
+    },
+    "./extended": {
+      "types": "./dist/extended.d.ts",
+      "require": "./dist/extended.cjs",
+      "import": "./dist/extended.js"
     }
   },
   "files": [
-    "dist",
-    "data"
+    "dist"
   ],
   "scripts": {
     "build": "tsup",
