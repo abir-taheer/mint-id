@@ -3,10 +3,10 @@ import { mintId, entropy, wordlist } from '../src/index.js';
 import { UnknownModelError } from '../src/errors.js';
 
 describe('mintId', () => {
-  it('returns 6 underscore-separated words by default', () => {
+  it('returns 12 underscore-separated words by default', () => {
     const id = mintId();
     const parts = id.split('_');
-    expect(parts).toHaveLength(6);
+    expect(parts).toHaveLength(12);
     parts.forEach(word => expect(word.length).toBeGreaterThanOrEqual(3));
   });
 
@@ -17,7 +17,7 @@ describe('mintId', () => {
 
   it('respects custom delimiter', () => {
     const id = mintId({ delimiter: '-' });
-    expect(id.split('-')).toHaveLength(6);
+    expect(id.split('-')).toHaveLength(12);
     expect(id).not.toContain('_');
   });
 
@@ -52,15 +52,15 @@ describe('entropy', () => {
   it('returns correct info for defaults', () => {
     const info = entropy();
     expect(info.poolSize).toBe(2220);
-    expect(info.words).toBe(6);
+    expect(info.words).toBe(12);
     expect(info.bitsPerWord).toBeCloseTo(11.12, 1);
-    expect(info.bits).toBeCloseTo(66.7, 0);
+    expect(info.bits).toBeCloseTo(133.4, 0);
   });
 
   it('calculates for specific model', () => {
     const info = entropy({ model: 'claude-opus-4-6' });
     expect(info.poolSize).toBe(7629);
-    expect(info.words).toBe(6);
+    expect(info.words).toBe(12);
     expect(info.bitsPerWord).toBeCloseTo(12.9, 0);
   });
 

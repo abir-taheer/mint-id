@@ -4,7 +4,7 @@ import { getWordlist } from './wordlist.js';
 import { wordsForEntropy, entropyInfo } from './entropy.js';
 import { generate } from './generate.js';
 
-const DEFAULT_WORDS = 6;
+const DEFAULT_WORDS = 12;
 const DEFAULT_DELIMITER = '_';
 
 /** Generate a cryptographically secure identifier using single-token words. */
