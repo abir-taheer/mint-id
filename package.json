@@ -1,6 +1,6 @@
 {
   "name": "mint-id",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Cryptographically secure identifiers using single-token dictionary words",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -16,6 +16,13 @@
       "types": "./dist/extended.d.ts",
       "require": "./dist/extended.cjs",
       "import": "./dist/extended.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "extended": [
+        "./dist/extended.d.ts"
+      ]
     }
   },
   "files": [
